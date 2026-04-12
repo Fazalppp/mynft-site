@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NOVA NFT Marketplace Pro</title>
+  <style>
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #060b2d;
+      color: white;
+    }
+    .container { width: min(1180px, 92vw); margin: 0 auto; }
+    .navbar {
+      position: sticky; top: 0; z-index: 60;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 16px 0;
+      background: rgba(6,11,45,.96);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+    .logo { font-size: 34px; font-weight: 800; color: #79f7ff; }
+    .nav-actions { display: flex; gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
+    .btn {
+      border: none;
+      border-radius: 999px;
+      padding: 13px 18px;
+      font-weight: 700;
+      cursor: pointer;
+      color: white;
+      background: linear-gradient(90deg, #a000b2, #1fe1e9);
+    }
+    .btn.secondary {
+      background: transparent;
+      border: 1px solid rgba(255,255,255,.18);
+    }
+    .btn.danger {
+      background: linear-gradient(90deg, #b0004c, #ff5470);
+    }
+    .btn.warn {
+      background: linear-gradient(90deg, #ae6b00, #f4b400);
+      color: #111;
+    }
+    .btn:disabled { opacity: .6; cursor: not-allowed; }
+
+    .hero {
+      padding: 28px 0 24px;
+      text-align: center;
+    }
+    .badge {
+      display: inline-block;
+      padding: 8px 12px;
+      border-radius: 999px;
+      color: #79f7ff;
+      border: 1px solid rgba(121,247,255,.28);
+      background: rgba(121,247,255,.08);
+      font-size: 12px;
+      margin-bottom: 16px;
+    }
+    .hero h1 {
+      margin: 0 0 10px;
+      font-size: clamp(34px, 6vw, 64px);
+      line-height: 1.06;
+    }
+    .hero p {
+      width: min(800px, 100%);
+      margin: 0 auto 24px;
+      color: #bcc6e5;
+      line-height: 1.7;
+      font-size: 17px;
+    }
+    .hero-actions {
+      display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+    .hero-card {
+      overflow: hidden;
+      border-radius: 26px;
+      border: 1px solid rgba(255,255,255,.08);
+      box-shadow: 0 12px 30px rgba(0,0,0,.25);
+    }
+    .hero-card img {
+      width: 100%;
+      aspect-ratio: 16/7;
+      object-fit: cover;
+      display: block;
+    }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+      margin: 22px 0 34px;
+    }
+    .stat {
+      text-align: center;
+      padding: 18px;
+      border-radius: 20px;
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.08);
+    }
+    .stat h3 { margin: 0 0 4px; font-size: 28px; color: #79f7ff; }
+    .stat p { margin: 0; color: #bcc6e5; }
+
+    .section-title {
+      text-align: center;
+      margin: 0 0 8px;
+      font-size: 30px;
+    }
+    .section-subtitle {
+      text-align: center;
+      margin: 0 0 24px;
+      color: #bcc6e5;
+    }
+
+    .grid-2, .dashboard-grid, .admin-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 18px;
+      margin: 24px 0 36px;
+    }
+
+    .panel {
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 24px;
+      padding: 24px;
+      box-shadow: 0 12px 30px rgba(0,0,0,.22);
+    }
+    .panel h2, .panel h3 { margin-top: 0; }
+    .panel p { color: #bcc6e5; }
+
+    .tabs {
+      display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px;
+    }
+    .tab-btn {
+      border: 1px solid rgba(255,255,255,.14);
+      background: transparent;
+      color: white;
+      border-radius: 999px;
+      padding: 10px 16px;
+      cursor: pointer;
+      font-weight: 700;
+    }
+    .tab-btn.active {
+      background: linear-gradient(90deg, #a000b2, #1fe1e9);
+      border-color: transparent;
+    }
+
+    .input, .textarea, .file-input, select {
+      width: 100%;
+      padding: 14px 16px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.07);
+      color: white;
+      font-size: 16px;
+      outline: none;
+      margin-bottom: 12px;
+    }
+    .textarea { min-height: 110px; resize: vertical; }
+    .input::placeholder, .textarea::placeholder { color: #9dabcf; }
+    option { color: black; }
+
+    .msg {
+      min-height: 24px;
+      margin-top: 12px;
+      text-align: center;
+      color: #ff8e8e;
+      word-break: break-word;
+      font-size: 14px;
+    }
+
+    .dashboard, .admin-panel, .orders-panel {
+      display: none;
+      margin: 30px 0 36px;
+    }
+
+    .meta {
+      background: rgba(255,255,255,.05);
+      padding: 12px 14px;
+      border-radius: 14px;
+      margin: 10px 0;
+      color: #d9dff4;
+    }
+
+    .nft-grid, .order-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 18px;
+      margin: 22px 0 40px;
+    }
+    .nft-card, .order-card {
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 24px;
+      overflow: hidden;
+    }
+    .nft-card img {
+      width: 100%;
+      aspect-ratio: 1/1;
+      object-fit: cover;
+      display: block;
+      background: #10173a;
+    }
+    .nft-body, .order-body { padding: 18px; }
+    .nft-body h3, .order-body h3 { margin: 0 0 6px; }
+    .nft-body p, .order-body p { margin: 0 0 10px; color: #bcc6e5; }
+    .price {
+      display: inline-block;
+      font-size: 22px;
+      font-weight: 800;
+      color: #79f7ff;
+      margin-bottom: 12px;
+    }
+    .muted { color: #9dabcf; font-size: 14px; }
+    .empty {
+      text-align: center;
+      padding: 24px;
+      border-radius: 20px;
+      background: rgba(255,255,255,.03);
+      border: 1px dashed rgba(255,255,255,.12);
+      color: #bcc6e5;
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.68);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      padding: 18px;
+    }
+    .modal-content {
+      width: min(720px, 100%);
+      max-height: 92vh;
+      overflow: auto;
+      background: #11183a;
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 24px;
+      padding: 20px;
+      box-shadow: 0 16px 40px rgba(0,0,0,.35);
+    }
+    .modal-img {
+      width: 100%;
+      border-radius: 18px;
+      margin-bottom: 16px;
+      aspect-ratio: 16/10;
+      object-fit: cover;
+      display: block;
+      background: #0d1330;
+    }
+    .modal-top {
+      display: flex; justify-content: space-between; gap: 12px; align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .footer {
+      padding: 24px 0 34px;
+      text-align: center;
+      color: #95a6cb;
+      font-size: 14px;
+    }
+
+    @media (min-width: 780px) {
+      .stats { grid-template-columns: repeat(4, 1fr); }
+      .grid-2 { grid-template-columns: 1.15fr 1fr; }
+      .dashboard-grid, .admin-grid { grid-template-columns: 1fr 1fr; }
+      .nft-grid { grid-template-columns: repeat(3, 1fr); }
+      .order-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="navbar">
+      <div class="logo">NOVA</div>
+      <div class="nav-actions">
+        <button class="btn secondary" id="navMarketBtn">Explore Market</button>
+        <button class="btn secondary" id="navOrdersBtn">My Orders</button>
+        <button class="btn secondary" id="navAdminBtn">Admin</button>
+        <button class="btn" id="navAuthBtn">Login</button>
+      </div>
+    </div>
+
+    <section class="hero">
+      <div class="badge">FULL NFT SYSTEM PRO</div>
+      <h1>Discover, Collect & Manage Digital NFTs</h1>
+      <p>
+        Signup, login, Google sign-in, dashboard, logout, admin panel, real NFT upload to Firebase Storage,
+        Firestore listing, buy system, order history, aur admin order dashboard.
+      </p>
+      <div class="hero-actions">
+        <button class="btn" id="heroDashboardBtn">Open Dashboard</button>
+        <button class="btn secondary" id="heroMarketBtn">See NFTs</button>
+      </div>
+      <div class="hero-card">
+        <img src="https://picsum.photos/1400/700?random=22" alt="NOVA hero">
+      </div>
+      <div class="stats">
+        <div class="stat"><h3>12K+</h3><p>Collectors</p></div>
+        <div class="stat"><h3>45K+</h3><p>NFT Items</p></div>
+        <div class="stat"><h3>$9.8M</h3><p>Volume</p></div>
+        <div class="stat"><h3>99%</h3><p>Secure Deals</p></div>
+      </div>
+    </section>
+
+    <section class="grid-2" id="authSection">
+      <div class="panel">
+        <h2>Account System</h2>
+        <p>Create account, login with email, or continue with Google. Mobile ke liye redirect login use ho raha hai.</p>
+
+        <div class="tabs">
+          <button class="tab-btn active" id="tabSignup">Signup</button>
+          <button class="tab-btn" id="tabLogin">Login</button>
+        </div>
+
+        <div id="signupOnlyFields">
+          <input class="input" id="name" type="text" placeholder="Your name" />
+        </div>
+
+        <input class="input" id="email" type="email" placeholder="Enter email" />
+        <input class="input" id="password" type="password" placeholder="Password (6+ chars)" />
+
+        <button class="btn" id="primaryAuthBtn">Create Account</button>
+        <button class="btn secondary" id="googleBtn">Continue with Google</button>
+        <div class="msg" id="authMsg"></div>
+      </div>
+
+      <div class="panel">
+        <h2>System Features</h2>
+        <div class="meta">✅ Signup + Login</div>
+        <div class="meta">✅ Google login</div>
+        <div class="meta">✅ Dashboard + Logout</div>
+        <div class="meta">✅ Real NFT upload</div>
+        <div class="meta">✅ Buy request system</div>
+        <div class="meta">✅ My orders history</div>
+        <div class="meta">✅ Admin order dashboard</div>
+        <div class="meta">ℹ Real Stripe / crypto payment ke liye backend chahiye</div>
+      </div>
+    </section>
+
+    <section class="dashboard" id="dashboardSection">
+      <h2 class="section-title">User Dashboard</h2>
+      <p class="section-subtitle">Login ke baad yeh section automatically open hota hai.</p>
+
+      <div class="dashboard-grid">
+        <div class="panel">
+          <h3>Welcome 👋</h3>
+          <div class="meta"><strong>Name:</strong> <span id="userName">-</span></div>
+          <div class="meta"><strong>Email:</strong> <span id="userEmail">-</span></div>
+          <div class="meta"><strong>Provider:</strong> <span id="userProvider">-</span></div>
+          <div class="meta"><strong>Role:</strong> <span id="userRole">User</span></div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <button class="btn" id="dashboardMarketBtn">Open NFT Market</button>
+            <button class="btn secondary" id="dashboardOrdersBtn">My Orders</button>
+            <button class="btn secondary" id="dashboardAdminBtn">Open Admin</button>
+            <button class="btn danger" id="logoutBtn">Logout</button>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h3>Account Status</h3>
+          <div class="meta">Session active ✅</div>
+          <div class="meta">Firebase auth connected ✅</div>
+          <div class="meta">Google redirect ready ✅</div>
+          <div class="meta">NFT upload ready ✅</div>
+          <div class="meta">Buy system ready ✅</div>
+          <div class="meta">Order history ready ✅</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="orders-panel" id="ordersSection">
+      <h2 class="section-title">My Orders</h2>
+      <p class="section-subtitle">Yahan user ke buy requests show hongi.</p>
+      <div id="myOrdersList" class="order-grid"></div>
+    </section>
+
+    <section class="admin-panel" id="adminSection">
+      <h2 class="section-title">Admin Panel</h2>
+      <p class="section-subtitle">Sirf admin email ko dikhai dega. Yahan se real NFT upload aur orders manage honge.</p>
+
+      <div class="admin-grid">
+        <div class="panel">
+          <h3>Upload New NFT</h3>
+          <input class="input" id="nftTitle" type="text" placeholder="NFT title" />
+          <input class="input" id="nftPrice" type="number" min="100" max="200" placeholder="Price (100 to 200)" />
+          <textarea class="textarea" id="nftDescription" placeholder="NFT description"></textarea>
+          <input class="file-input" id="nftImage" type="file" accept="image/*" />
+          <button class="btn" id="uploadNftBtn">Upload NFT</button>
+          <div class="msg" id="adminMsg"></div>
+        </div>
+
+        <div class="panel">
+          <h3>Admin Notes</h3>
+          <div class="meta">Admin email list code me set hai.</div>
+          <div class="meta">Image Firebase Storage me upload hoti hai.</div>
+          <div class="meta">NFT Firestore me save hoti hai.</div>
+          <div class="meta">Buy request Firestore orders me save hoti hai.</div>
+          <div class="meta">Admin status update kar sakta hai.</div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h3>All Orders Dashboard</h3>
+        <div id="adminOrdersList" class="order-grid"></div>
+      </div>
+    </section>
+
+    <section id="marketSection">
+      <h2 class="section-title">NFT Marketplace</h2>
+      <p class="section-subtitle">Admin panel se upload karo. Yahan realtime show hoga.</p>
+      <div id="nftList" class="nft-grid"></div>
+    </section>
+
+    <div class="footer">© 2026 NOVA STYLE NFT. All rights reserved.</div>
+  </div>
+
+  <div class="modal" id="detailModal">
+    <div class="modal-content">
+      <div class="modal-top">
+        <h3 style="margin:0;">NFT Details</h3>
+        <button class="btn secondary" id="closeDetailModal">Close</button>
+      </div>
+      <img class="modal-img" id="detailImage" src="" alt="NFT detail">
+      <h2 id="detailTitle" style="margin-bottom:8px;"></h2>
+      <div class="price" id="detailPrice"></div>
+      <p id="detailDescription"></p>
+      <div class="muted" id="detailCreator"></div>
+      <div style="margin-top:16px;">
+        <button class="btn" id="detailBuyBtn">Buy This NFT</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="buyModal">
+    <div class="modal-content">
+      <div class="modal-top">
+        <h3 style="margin:0;">Buy NFT</h3>
+        <button class="btn secondary" id="closeBuyModal">Close</button>
+      </div>
+      <div class="meta"><strong>NFT:</strong> <span id="buyNftTitle">-</span></div>
+      <div class="meta"><strong>Price:</strong> $<span id="buyNftPrice">-</span></div>
+      <input class="input" id="buyerName" type="text" placeholder="Your full name" />
+      <input class="input" id="buyerPhone" type="text" placeholder="Phone / WhatsApp" />
+      <select class="input" id="paymentMethod">
+        <option value="cash">Cash on Contact</option>
+        <option value="bank">Bank Transfer</option>
+        <option value="jazzcash">JazzCash</option>
+        <option value="easypaisa">EasyPaisa</option>
+      </select>
+      <textarea class="textarea" id="buyerAddress" placeholder="Address / note"></textarea>
+      <button class="btn" id="confirmBuyBtn">Confirm Buy</button>
+      <div class="msg" id="buyMsg"></div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import {
+      getAuth,
+      createUserWithEmailAndPassword,
+      signInWithEmailAndPassword,
+      updateProfile,
+      GoogleAuthProvider,
+      signInWithRedirect,
+      getRedirectResult,
+      onAuthStateChanged,
+      signOut
+    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import {
+      getFirestore,
+      doc,
+      setDoc,
+      addDoc,
+      updateDoc,
+      collection,
+      serverTimestamp,
+      onSnapshot,
+      query,
+      orderBy,
+      where
+    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import {
+      getStorage,
+      ref,
+      uploadBytes,
+      getDownloadURL
+    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBuLaKo8Rpk80hkxCzIxxZAjmXEoWGxP5s",
+      authDomain: "mynft-xyz.firebaseapp.com",
+      projectId: "mynft-xyz",
+      storageBucket: "mynft-xyz.firebasestorage.app",
+      messagingSenderId: "1063944131356",
+      appId: "1:1063944131356:web:94d1ca2895d10b887da0d9"
+    };
+
+    const adminEmails = [
+      "muhammadfazal335@gmail.com"
+    ];
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const storage = getStorage(app);
+    const provider = new GoogleAuthProvider();
+
+    let currentMode = "signup";
+    let currentUser = null;
+    let selectedNft = null;
+
+    const authSection = document.getElementById("authSection");
+    const dashboardSection = document.getElementById("dashboardSection");
+    const adminSection = document.getElementById("adminSection");
+    const ordersSection = document.getElementById("ordersSection");
+
+    const authMsg = document.getElementById("authMsg");
+    const adminMsg = document.getElementById("adminMsg");
+    const buyMsg = document.getElementById("buyMsg");
+
+    const nftList = document.getElementById("nftList");
+    const myOrdersList = document.getElementById("myOrdersList");
+    const adminOrdersList = document.getElementById("adminOrdersList");
+
+    const tabSignup = document.getElementById("tabSignup");
+    const tabLogin = document.getElementById("tabLogin");
+    const signupOnlyFields = document.getElementById("signupOnlyFields");
+    const primaryAuthBtn = document.getElementById("primaryAuthBtn");
+    const googleBtn = document.getElementById("googleBtn");
+    const navAuthBtn = document.getElementById("navAuthBtn");
+
+    const detailModal = document.getElementById("detailModal");
+    const buyModal = document.getElementById("buyModal");
+
+    function isAdmin(user) {
+      return !!(user && user.email && adminEmails.includes(user.email));
+    }
+
+    function showAuthMessage(text, ok = false) {
+      authMsg.textContent = text;
+      authMsg.style.color = ok ? "#7df79d" : "#ff8e8e";
+    }
+
+    function showAdminMessage(text, ok = false) {
+      adminMsg.textContent = text;
+      adminMsg.style.color = ok ? "#7df79d" : "#ff8e8e";
+    }
+
+    function showBuyMessage(text, ok = false) {
+      buyMsg.textContent = text;
+      buyMsg.style.color = ok ? "#7df79d" : "#ff8e8e";
+    }
+
+    function scrollToSection(id) {
+      document.getElementById(id).scrollIntoView({ behavior: "smooth" });
+    }
+
+    function switchMode(mode) {
+      currentMode = mode;
+      if (mode === "signup") {
+        tabSignup.classList.add("active");
+        tabLogin.classList.remove("active");
+        signupOnlyFields.style.display = "block";
+        primaryAuthBtn.textContent = "Create Account";
+      } else {
+        tabLogin.classList.add("active");
+        tabSignup.classList.remove("active");
+        signupOnlyFields.style.display = "none";
+        primaryAuthBtn.textContent = "Login";
+      }
+      showAuthMessage("");
+    }
+
+    tabSignup.addEventListener("click", () => switchMode("signup"));
+    tabLogin.addEventListener("click", () => switchMode("login"));
+
+    document.getElementById("navMarketBtn").addEventListener("click", () => scrollToSection("marketSection"));
+    document.getElementById("navOrdersBtn").addEventListener("click", () => {
+      if (currentUser) scrollToSection("ordersSection");
+      else scrollToSection("authSection");
+    });
+    document.getElementById("navAdminBtn").addEventListener("click", () => {
+      if (currentUser && isAdmin(currentUser)) scrollToSection("adminSection");
+      else scrollToSection("authSection");
+    });
+    document.getElementById("heroMarketBtn").addEventListener("click", () => scrollToSection("marketSection"));
+    document.getElementById("heroDashboardBtn").addEventListener("click", () => {
+      if (currentUser) scrollToSection("dashboardSection");
+      else scrollToSection("authSection");
+    });
+    document.getElementById("dashboardMarketBtn").addEventListener("click", () => scrollToSection("marketSection"));
+    document.getElementById("dashboardOrdersBtn").addEventListener("click", () => scrollToSection("ordersSection"));
+    document.getElementById("dashboardAdminBtn").addEventListener("click", () => scrollToSection("adminSection"));
+
+    navAuthBtn.addEventListener("click", async () => {
+      if (currentUser) await signOut(auth);
+      else scrollToSection("authSection");
+    });
+
+    document.getElementById("logoutBtn").addEventListener("click", async () => {
+      await signOut(auth);
+    });
+
+    document.getElementById("closeDetailModal").addEventListener("click", () => detailModal.style.display = "none");
+    document.getElementById("closeBuyModal").addEventListener("click", () => buyModal.style.display = "none");
+
+    detailModal.addEventListener("click", (e) => {
+      if (e.target === detailModal) detailModal.style.display = "none";
+    });
+    buyModal.addEventListener("click", (e) => {
+      if (e.target === buyModal) buyModal.style.display = "none";
+    });
+
+    function showSignedOutUI() {
+      currentUser = null;
+      authSection.style.display = "grid";
+      dashboardSection.style.display = "none";
+      adminSection.style.display = "none";
+      ordersSection.style.display = "none";
+      navAuthBtn.textContent = "Login";
+    }
+
+    function showSignedInUI(user) {
+      currentUser = user;
+      authSection.style.display = "none";
+      dashboardSection.style.display = "block";
+      ordersSection.style.display = "block";
+      adminSection.style.display = isAdmin(user) ? "block" : "none";
+      navAuthBtn.textContent = "Logout";
+
+      const name = user.displayName || (user.email ? user.email.split("@")[0] : "User");
+      const providerName = user.providerData && user.providerData[0] ? user.providerData[0].providerId : "password";
+
+      document.getElementById("userName").textContent = name;
+      document.getElementById("userEmail").textContent = user.email || "-";
+      document.getElementById("userProvider").textContent = providerName;
+      document.getElementById("userRole").textContent = isAdmin(user) ? "Admin" : "User";
+
+      document.getElementById("buyerName").value = name;
+    }
+
+    primaryAuthBtn.addEventListener("click", async () => {
+      const name = document.getElementById("name").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value.trim();
+
+      if (!email || !password) {
+        showAuthMessage("Email aur password likho.");
+        return;
+      }
+
+      try {
+        if (currentMode === "signup") {
+          const cred = await createUserWithEmailAndPassword(auth, email, password);
+          if (name) await updateProfile(cred.user, { displayName: name });
+
+          await setDoc(doc(db, "users", cred.user.uid), {
+            uid: cred.user.uid,
+            name: name || email.split("@")[0],
+            email,
+            role: adminEmails.includes(email) ? "admin" : "user",
+            createdAt: serverTimestamp()
+          });
+
+          showAuthMessage("Account Created Successfully ✅", true);
+        } else {
+          await signInWithEmailAndPassword(auth, email, password);
+          showAuthMessage("Login Success ✅", true);
+        }
+      } catch (e) {
+        showAuthMessage(e.message);
+      }
+    });
+
+    googleBtn.addEventListener("click", async () => {
+      try {
+        await signInWithRedirect(auth, provider);
+      } catch (e) {
+        showAuthMessage(e.message);
+      }
+    });
+
+    document.getElementById("uploadNftBtn").addEventListener("click", async () => {
+      if (!currentUser || !isAdmin(currentUser)) {
+        showAdminMessage("Sirf admin upload kar sakta hai.");
+        return;
+      }
+
+      const title = document.getElementById("nftTitle").value.trim();
+      const price = Number(document.getElementById("nftPrice").value);
+      const description = document.getElementById("nftDescription").value.trim();
+      const imageFile = document.getElementById("nftImage").files[0];
+
+      if (!title || !price || !description || !imageFile) {
+        showAdminMessage("Sab fields fill karo aur image select karo.");
+        return;
+      }
+      if (price < 100 || price > 200) {
+        showAdminMessage("Price 100 se 200 ke beech rakho.");
+        return;
+      }
+
+      try {
+        showAdminMessage("Uploading NFT...");
+        const fileName = Date.now() + "-" + imageFile.name.replace(/\s+/g, "-");
+        const storageRef = ref(storage, "nfts/" + fileName);
+        await uploadBytes(storageRef, imageFile);
+        const imageUrl = await getDownloadURL(storageRef);
+
+        await addDoc(collection(db, "nfts"), {
+          title,
+          price,
+          description,
+          imageUrl,
+          createdBy: currentUser.email || "admin",
+          createdAt: serverTimestamp()
+        });
+
+        document.getElementById("nftTitle").value = "";
+        document.getElementById("nftPrice").value = "";
+        document.getElementById("nftDescription").value = "";
+        document.getElementById("nftImage").value = "";
+        showAdminMessage("NFT uploaded successfully ✅", true);
+      } catch (e) {
+        showAdminMessage(e.message);
+      }
+    });
+
+    function openDetailModal(item) {
+      selectedNft = item;
+      document.getElementById("detailImage").src = item.imageUrl;
+      document.getElementById("detailTitle").textContent = item.title;
+      document.getElementById("detailPrice").textContent = "$" + item.price;
+      document.getElementById("detailDescription").textContent = item.description;
+      document.getElementById("detailCreator").textContent = "Uploaded by: " + (item.createdBy || "admin");
+      detailModal.style.display = "flex";
+    }
+
+    function openBuyModal(item) {
+      if (!currentUser) {
+        showAuthMessage("Pehle login karo buy karne ke liye.");
+        scrollToSection("authSection");
+        return;
+      }
+      selectedNft = item;
+      document.getElementById("buyNftTitle").textContent = item.title;
+      document.getElementById("buyNftPrice").textContent = item.price;
+      document.getElementById("buyerPhone").value = "";
+      document.getElementById("buyerAddress").value = "";
+      showBuyMessage("");
+      buyModal.style.display = "flex";
+    }
+
+    document.getElementById("detailBuyBtn").addEventListener("click", () => {
+      detailModal.style.display = "none";
+      if (selectedNft) openBuyModal(selectedNft);
+    });
+
+    document.getElementById("confirmBuyBtn").addEventListener("click", async () => {
+      if (!currentUser || !selectedNft) return;
+
+      const buyerName = document.getElementById("buyerName").value.trim();
+      const buyerPhone = document.getElementById("buyerPhone").value.trim();
+      const buyerAddress = document.getElementById("buyerAddress").value.trim();
+      const paymentMethod = document.getElementById("paymentMethod").value;
+
+      if (!buyerName || !buyerPhone || !buyerAddress) {
+        showBuyMessage("Buyer details complete karo.");
+        return;
+      }
+
+      try {
+        await addDoc(collection(db, "orders"), {
+          nftId: selectedNft.id,
+          nftTitle: selectedNft.title,
+          price: Number(selectedNft.price),
+          imageUrl: selectedNft.imageUrl,
+          buyerUid: currentUser.uid,
+          buyerEmail: currentUser.email || "",
+          buyerName,
+          buyerPhone,
+          buyerAddress,
+          paymentMethod,
+          status: "pending",
+          createdAt: serverTimestamp()
+        });
+
+        showBuyMessage("Order saved successfully ✅", true);
+        setTimeout(() => {
+          buyModal.style.display = "none";
+        }, 1000);
+      } catch (e) {
+        showBuyMessage(e.message);
+      }
+    });
+
+    function renderNfts(items) {
+      if (!items.length) {
+        nftList.innerHTML = '<div class="empty">Abhi koi NFT upload nahi hui. Admin panel se upload karo.</div>';
+        return;
+      }
+
+      nftList.innerHTML = items.map(item => `
+        <div class="nft-card">
+          <img src="${item.imageUrl}" alt="${item.title}">
+          <div class="nft-body">
+            <h3>${item.title}</h3>
+            <p>${item.description}</p>
+            <span class="price">$${item.price}</span>
+            <div class="muted">Uploaded by: ${item.createdBy || "admin"}</div>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;">
+              <button class="btn secondary detail-btn" data-id="${item.id}">Details</button>
+              <button class="btn buy-btn" data-id="${item.id}">Buy Now</button>
+            </div>
+          </div>
+        </div>
+      `).join("");
+
+      document.querySelectorAll(".detail-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const item = items.find(x => x.id === btn.dataset.id);
+          if (item) openDetailModal(item);
+        });
+      });
+      document.querySelectorAll(".buy-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const item = items.find(x => x.id === btn.dataset.id);
+          if (item) openBuyModal(item);
+        });
+      });
+    }
+
+    function renderMyOrders(items) {
+      if (!items.length) {
+        myOrdersList.innerHTML = '<div class="empty">Abhi tak tumhari koi order nahi hai.</div>';
+        return;
+      }
+
+      myOrdersList.innerHTML = items.map(item => `
+        <div class="order-card">
+          <div class="order-body">
+            <h3>${item.nftTitle}</h3>
+            <p><strong>Price:</strong> $${item.price}</p>
+            <p><strong>Payment:</strong> ${item.paymentMethod}</p>
+            <p><strong>Status:</strong> ${item.status}</p>
+            <p class="muted">${item.buyerAddress || ""}</p>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function renderAdminOrders(items) {
+      if (!items.length) {
+        adminOrdersList.innerHTML = '<div class="empty">Abhi koi order nahi hai.</div>';
+        return;
+      }
+
+      adminOrdersList.innerHTML = items.map(item => `
+        <div class="order-card">
+          <div class="order-body">
+            <h3>${item.nftTitle}</h3>
+            <p><strong>Buyer:</strong> ${item.buyerName}</p>
+            <p><strong>Email:</strong> ${item.buyerEmail}</p>
+            <p><strong>Phone:</strong> ${item.buyerPhone}</p>
+            <p><strong>Payment:</strong> ${item.paymentMethod}</p>
+            <p><strong>Price:</strong> $${item.price}</p>
+            <p><strong>Status:</strong> ${item.status}</p>
+            <p class="muted">${item.buyerAddress || ""}</p>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;">
+              <button class="btn warn admin-status-btn" data-id="${item.id}" data-status="paid">Mark Paid</button>
+              <button class="btn secondary admin-status-btn" data-id="${item.id}" data-status="done">Mark Done</button>
+            </div>
+          </div>
+        </div>
+      `).join("");
+
+      document.querySelectorAll(".admin-status-btn").forEach(btn => {
+        btn.addEventListener("click", async () => {
+          try {
+            await updateDoc(doc(db, "orders", btn.dataset.id), {
+              status: btn.dataset.status
+            });
+            alert("Order updated ✅");
+          } catch (e) {
+            alert(e.message);
+          }
+        });
+      });
+    }
+
+    onSnapshot(query(collection(db, "nfts"), orderBy("createdAt", "desc")), (snapshot) => {
+      const items = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+      renderNfts(items);
+    }, () => {
+      nftList.innerHTML = '<div class="empty">NFT list load nahi ho saki. Firestore enable karo.</div>';
+    });
+
+    function watchMyOrders(uid) {
+      onSnapshot(query(collection(db, "orders"), where("buyerUid", "==", uid)), (snapshot) => {
+        const items = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+        renderMyOrders(items);
+      }, () => {
+        myOrdersList.innerHTML = '<div class="empty">Orders load nahi ho sakin.</div>';
+      });
+    }
+
+    function watchAdminOrders() {
+      onSnapshot(query(collection(db, "orders"), orderBy("createdAt", "desc")), (snapshot) => {
+        const items = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+        renderAdminOrders(items);
+      }, () => {
+        adminOrdersList.innerHTML = '<div class="empty">Admin orders load nahi ho sakin.</div>';
+      });
+    }
+
+    try {
+      const redirectResult = await getRedirectResult(auth);
+      if (redirectResult && redirectResult.user) {
+        const user = redirectResult.user;
+        await setDoc(doc(db, "users", user.uid), {
+          uid: user.uid,
+          name: user.displayName || (user.email ? user.email.split("@")[0] : "User"),
+          email: user.email || "",
+          role: isAdmin(user) ? "admin" : "user",
+          createdAt: serverTimestamp()
+        }, { merge: true });
+        showAuthMessage("Google Login Success ✅", true);
+      }
+    } catch (e) {
+      if (e && e.message) showAuthMessage(e.message);
+    }
+
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        showSignedInUI(user);
+        watchMyOrders(user.uid);
+        if (isAdmin(user)) watchAdminOrders();
+      } else {
+        showSignedOutUI();
+        myOrdersList.innerHTML = '<div class="empty">Login karo orders dekhne ke liye.</div>';
+        adminOrdersList.innerHTML = '<div class="empty">Admin login required.</div>';
+      }
+    });
+  </script>
+</body>
+</html>
