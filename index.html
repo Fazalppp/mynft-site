@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>NOVA NFT - Auth</title>
+</head>
+<body style="background:#0b0f2a;color:white;font-family:sans-serif;text-align:center;padding-top:100px;">
+
+<h2>Create Account</h2>
+
+<input id="email" placeholder="Enter email"><br><br>
+<input id="password" type="password" placeholder="Password"><br><br>
+
+<button onclick="signup()">Create Account</button><br><br>
+<button onclick="googleLogin()">Continue with Google</button>
+
+<p id="msg"></p>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithRedirect, getRedirectResult } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBuLaKo8Rpk80hkxCzIxxZAjmXEoWGxP5s",
+  authDomain: "mynft-xyz.firebaseapp.com",
+  projectId: "mynft-xyz",
+  storageBucket: "mynft-xyz.firebasestorage.app",
+  messagingSenderId: "1063944131356",
+  appId: "1:1063944131356:web:94d1ca2895d10b887da0d9"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const provider = new GoogleAuthProvider();
+
+const msg = document.getElementById("msg");
+
+window.signup = async () => {
+  try {
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+
+    await createUserWithEmailAndPassword(auth, email, password);
+    msg.innerText = "Account Created ✅";
+
+    setTimeout(()=>{
+      window.location.href = "home.html";
+    },1000);
+
+  } catch(e){
+    msg.innerText = e.message;
+  }
+};
+
+window.googleLogin = async () => {
+  await signInWithRedirect(auth, provider);
+};
+
+getRedirectResult(auth).then((result)=>{
+  if(result && result.user){
+    msg.innerText = "Google Login Success ✅";
+
+    setTimeout(()=>{
+      window.location.href = "home.html";
+    },1000);
+  }
+});
+</script>
+
+</body>
+</html>
