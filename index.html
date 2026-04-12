@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>NOVA NFT</title>
+
+  <style>
+    body {
+      font-family: Arial;
+      background: #0b0f2a;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .box {
+      width: 320px;
+      padding: 20px;
+      border-radius: 15px;
+      background: #12172e;
+      text-align: center;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border-radius: 8px;
+      border: none;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      border: none;
+      border-radius: 25px;
+      background: linear-gradient(90deg, purple, cyan);
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .google {
+      background: transparent;
+      border: 1px solid #444;
+    }
+
+    .error {
+      color: red;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="box">
+  <h2>Create Account</h2>
+
+  <input type="email" id="email" placeholder="Enter email"/>
+  <input type="password" id="password" placeholder="Password"/>
+
+  <button onclick="signup()">Create Account</button>
+  <button class="google" onclick="googleLogin()">Continue with Google</button>
+
+  <div class="error" id="error"></div>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getAuth, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } 
+    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBuLaKo8Rpk80hkxCzIxxZAjmXEoWGxP5s",
+    authDomain: "mynft-site.vercel.app",
+    projectId: "mynft-xyz",
+    storageBucket: "mynft-xyz.firebasestorage.app",
+    messagingSenderId: "1063944131356",
+    appId: "1:1063944131356:web:94d1ca2895d10b887da0d9"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const provider = new GoogleAuthProvider();
+
+  window.signup = async () => {
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+
+    try {
+      await createUserWithEmailAndPassword(auth, email, password);
+      alert("Account Created ✅");
+    } catch (e) {
+      document.getElementById("error").innerText = e.message;
+    }
+  };
+
+  window.googleLogin = async () => {
+    try {
+      await signInWithPopup(auth, provider);
+      alert("Google Login Success ✅");
+    } catch (e) {
+      document.getElementById("error").innerText = e.message;
+    }
+  };
+</script>
+
+</body>
+</html>
