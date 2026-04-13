@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Treasure Fun Style UI</title>
+  <style>
+    :root{
+      --bg:#f4f4f4;
+      --card:#ffffff;
+      --text:#111;
+      --muted:#787878;
+      --line:#ececec;
+      --grad:linear-gradient(90deg,#5ebcff 0%, #9bf3df 48%, #f1d1c2 100%);
+      --shadow:0 10px 24px rgba(0,0,0,.10);
+      --radius:22px;
+    }
+    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+    body{
+      margin:0;
+      font-family:Arial,Helvetica,sans-serif;
+      background:var(--bg);
+      color:var(--text);
+    }
+    .app{
+      max-width:430px;
+      margin:0 auto;
+      min-height:100vh;
+      background:#f6f6f6;
+      position:relative;
+      padding-bottom:110px;
+    }
+    .topbar{
+      height:86px;
+      background:#fff;
+      border-bottom:1px solid #ececec;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:0 18px;
+      position:sticky;
+      top:0;
+      z-index:40;
+    }
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-size:18px;
+      font-weight:800;
+    }
+    .logoBox{
+      width:28px;height:28px;border-radius:8px;
+      background:linear-gradient(135deg,#a4dcff,#d9fff1,#ffe0f0);
+      border:1px solid #ddd;
+    }
+    .topActions{
+      display:flex;
+      align-items:center;
+      gap:14px;
+      font-size:18px;
+    }
+    .airdrop{
+      font-size:16px;
+      font-weight:700;
+      background:var(--grad);
+      -webkit-background-clip:text;
+      background-clip:text;
+      color:transparent;
+    }
+    .menu{font-size:26px;cursor:pointer}
+    .content{
+      padding:16px 16px 0;
+    }
+    .heroBg{
+      background:
+        radial-gradient(circle at 78% 12%, rgba(140,245,221,.7) 0 17%, transparent 18%),
+        radial-gradient(circle at 98% 36%, rgba(109,208,255,.65) 0 14%, transparent 15%),
+        linear-gradient(90deg,#dff4ef 0%, #f8e9e1 100%);
+      border-radius:0 0 30px 30px;
+      margin:-16px -16px 16px;
+      padding:18px 16px 18px;
+    }
+    .screen{display:none}
+    .screen.active{display:block}
+    .card{
+      background:var(--card);
+      border-radius:var(--radius);
+      padding:18px 16px;
+      box-shadow:0 2px 0 rgba(0,0,0,.02);
+      margin-bottom:14px;
+      border:1px solid rgba(0,0,0,.03);
+    }
+    .line{
+      height:1px;
+      background:var(--line);
+      margin:12px 0 16px;
+    }
+    .title{
+      margin:0;
+      font-size:18px;
+      font-weight:800;
+    }
+    .row{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .center{text-align:center}
+    .avatar{
+      width:118px;height:118px;border-radius:50%;
+      background:radial-gradient(circle at 35% 35%, #ffffff 0, #d8f7ff 20%, #cdd7ff 40%, #fde2f1 68%, #adf4ff 100%);
+      border:4px solid #90d7ff;
+      box-shadow:inset 0 0 30px rgba(255,255,255,.6);
+    }
+    .profileTop{
+      display:flex;
+      gap:16px;
+      align-items:center;
+      padding:8px 4px 4px;
+    }
+    .username{
+      font-size:24px;
+      font-weight:800;
+      margin:0 0 16px;
+    }
+    .chips{
+      display:flex; gap:10px; flex-wrap:wrap;
+    }
+    .chip{
+      border:1.5px solid #9a9a9a;
+      border-radius:999px;
+      padding:10px 14px;
+      background:rgba(255,255,255,.55);
+      font-size:15px;
+      display:flex; align-items:center; gap:6px;
+    }
+    .optionGrid2{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+    }
+    .optionItem{
+      text-align:center;
+      padding:10px 8px;
+    }
+    .softIcon{
+      width:42px;height:42px;border-radius:50%;
+      margin:0 auto 10px;
+      background:var(--grad);
+      opacity:.8;
+      display:flex;align-items:center;justify-content:center;
+      color:#fff;font-size:20px;font-weight:700;
+    }
+    .bigLabel{
+      font-size:17px;
+      font-weight:800;
+      line-height:1.2;
+    }
+    .mint{
+      color:#47d4c4;
+      margin-top:6px;
+      font-weight:800;
+      font-size:18px;
+    }
+    .settingsList .item{
+      display:flex;align-items:center;justify-content:space-between;
+      padding:16px 6px;
+      border-bottom:1px solid var(--line);
+      font-size:18px;
+    }
+    .settingsList .item:last-child{border-bottom:none}
+    .itemLeft{
+      display:flex;align-items:center;gap:14px;
+    }
+    .ico{
+      width:34px;height:34px;border-radius:10px;
+      display:flex;align-items:center;justify-content:center;
+      font-size:21px;color:#333;
+    }
+    .gradientBtn{
+      width:100%;
+      border:none;
+      border-radius:18px;
+      padding:18px 16px;
+      background:var(--grad);
+      color:#fff;
+      font-size:18px;
+      font-weight:700;
+      box-shadow:var(--shadow);
+      cursor:pointer;
+    }
+    .walletCardTitle{
+      font-size:16px;
+      font-weight:700;
+      margin-bottom:12px;
+    }
+    .balanceNum{
+      display:flex;align-items:center;gap:10px;
+      font-size:18px;
+    }
+    .usdt{
+      width:28px;height:28px;border-radius:50%;
+      background:#22b573;color:#fff;font-weight:800;
+      display:flex;align-items:center;justify-content:center;
+    }
+    .stats4{
+      display:grid;grid-template-columns:repeat(4,1fr);gap:8px;
+      text-align:center;
+    }
+    .num{
+      font-size:18px;font-weight:800;margin-bottom:8px;
+    }
+    .sub{
+      color:#555;
+      font-size:13px;
+      line-height:1.25;
+    }
+    .iconGrid4{
+      display:grid;grid-template-columns:repeat(4,1fr);gap:10px;text-align:center;
+      margin-top:12px;
+    }
+    .iconBtn{
+      cursor:pointer;padding:4px 2px;border-radius:14px;
+    }
+    .iconBtn:active{transform:scale(.98)}
+    .miniCircle{
+      width:42px;height:42px;border-radius:14px;
+      margin:0 auto 10px;
+      background:var(--grad);
+      opacity:.85;
+      display:flex;align-items:center;justify-content:center;
+      color:#fff;font-size:20px;
+    }
+    .selectBox{
+      display:flex;justify-content:space-between;align-items:center;
+      border:1.5px solid #ddd;border-radius:18px;padding:16px 18px;
+      font-size:18px;background:#fff;
+    }
+    .addressList{
+      display:grid;gap:14px;margin-top:14px;
+    }
+    .addrLabel{
+      font-size:16px;
+      font-weight:700;
+      color:#353535;
+    }
+    .addrValue{
+      font-size:13px;
+      color:#666;
+      word-break:break-all;
+      min-height:18px;
+    }
+    .tools3{
+      display:grid;grid-template-columns:repeat(3,1fr);gap:12px;text-align:center;
+      margin-top:6px;
+    }
+    .helpBubble{
+      position:absolute;right:14px;bottom:140px;
+      width:92px;height:92px;border-radius:50%;
+      background:var(--grad);
+      display:flex;align-items:center;justify-content:center;
+      color:#fff;font-size:16px;font-weight:700;
+      box-shadow:var(--shadow);
+    }
+    .sectionHead{
+      display:flex;justify-content:space-between;align-items:center;
+      margin-bottom:12px;
+    }
+    .historyItem{
+      padding:12px 0;border-bottom:1px solid var(--line);
+      display:flex;justify-content:space-between;gap:10px;
+    }
+    .historyItem:last-child{border-bottom:none}
+    .muted{color:var(--muted)}
+    .bottomShell{
+      position:fixed;left:18px;right:18px;bottom:18px;z-index:50;
+    }
+    .bottomNav{
+      background:#fff;
+      border-radius:999px;
+      box-shadow:var(--shadow);
+      padding:16px 10px;
+      display:grid;
+      grid-template-columns:repeat(5,1fr);
+      align-items:center;
+      text-align:center;
+    }
+    .navItem{
+      color:#8a8a8a;
+      font-size:15px;
+      cursor:pointer;
+      position:relative;
+    }
+    .navItem:not(:last-child)::after{
+      content:"|";
+      position:absolute;
+      right:-2px; top:0;
+      color:#bfbfbf;
+    }
+    .navItem.active{color:#222}
+    .backRow{
+      display:flex;align-items:center;gap:12px;margin-bottom:10px;font-size:20px;font-weight:700;
+      cursor:pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="topbar">
+      <div class="brand">
+        <div class="logoBox"></div>
+        <div>Treasure Fun</div>
+      </div>
+      <div class="topActions">
+        <div>🔔</div>
+        <div class="airdrop">AirDrop</div>
+        <div class="menu">☰</div>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <section id="myScreen" class="screen active">
+        <div class="heroBg">
+          <div class="backRow" data-open="homeScreen">‹</div>
+          <div class="profileTop">
+            <div class="avatar"></div>
+            <div>
+              <div class="username">fazaltreasure1</div>
+              <div class="chips">
+                <div class="chip">🐚 Level 1 ›</div>
+                <div class="chip">10 Points ›</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="optionGrid2">
+            <div class="optionItem">
+              <div class="softIcon">⟳</div>
+              <div class="bigLabel">Google Verification</div>
+              <div class="mint">Bound</div>
+            </div>
+            <div class="optionItem">
+              <div class="softIcon">👤</div>
+              <div class="bigLabel">User Settings</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card settingsList">
+          <div class="item">
+            <div class="itemLeft">
+              <div class="ico">🔒</div>
+              <div>Change Password</div>
+            </div>
+            <div class="muted">›</div>
+          </div>
+          <div class="item">
+            <div class="itemLeft">
+              <div class="ico">⌘</div>
+              <div>Line Settings</div>
+            </div>
+            <div class="muted">›</div>
+          </div>
+        </div>
+
+        <button class="gradientBtn">Log out</button>
+      </section>
+
+      <section id="homeScreen" class="screen">
+        <div class="card">
+          <div class="walletCardTitle">Wallet Balance</div>
+          <div class="row">
+            <div class="balanceNum"><div class="usdt">T</div><div>0</div></div>
+            <div class="row" style="gap:6px;font-weight:700;color:#93d7cc"><span>⤴</span><span>Share</span></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="sectionHead">
+            <h3 class="title">My Orders</h3>
+            <div class="muted">View Orders ›</div>
+          </div>
+          <div class="line"></div>
+          <div class="stats4">
+            <div><div class="num">0</div><div class="sub">All Orders</div></div>
+            <div><div class="num">0</div><div class="sub">Open Orders</div></div>
+            <div><div class="num">0</div><div class="sub">Purchased</div></div>
+            <div><div class="num">0</div><div class="sub">Sold</div></div>
+          </div>
+          <div class="iconGrid4">
+            <div class="iconBtn"><div class="miniCircle">◔</div><div class="sub">My NFTs</div></div>
+            <div class="iconBtn"><div class="miniCircle">📄</div><div class="sub">Profit Details</div></div>
+            <div class="iconBtn" data-open="depositScreen"><div class="miniCircle">💳</div><div class="sub">Deposit</div></div>
+            <div class="iconBtn"><div class="miniCircle">🧾</div><div class="sub">Withdraw</div></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 class="title">My Team</h3>
+          <div class="line"></div>
+          <div class="stats4" style="grid-template-columns:repeat(2,1fr);margin-bottom:10px">
+            <div><div class="num">0</div><div class="sub">A Tier Members</div></div>
+            <div><div class="num">0</div><div class="sub">B+C Tier Members</div></div>
+          </div>
+          <div class="iconGrid4">
+            <div class="iconBtn"><div class="miniCircle">👥</div><div class="sub">Team Members</div></div>
+            <div class="iconBtn"><div class="miniCircle">🏆</div><div class="sub">Team Contributions</div></div>
+            <div class="iconBtn"><div class="miniCircle">📋</div><div class="sub">Team Orders</div></div>
+            <div class="iconBtn"><div class="miniCircle">⤴</div><div class="sub">Share</div></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 class="title">Other Functions</h3>
+          <div class="line"></div>
+          <div class="iconBtn" style="width:52px"><div class="miniCircle">⚙</div></div>
+        </div>
+      </section>
+
+      <section id="depositScreen" class="screen">
+        <div class="card">
+          <div class="selectBox">
+            <span>Node 1</span>
+            <span>⌄</span>
+          </div>
+          <div class="addressList">
+            <div>
+              <div class="row">
+                <div class="addrLabel">USDT Deposit Address(BEP-20)</div>
+                <div>👁</div>
+              </div>
+              <div class="addrValue">0x9F198772dC7B23456D7cE148e78A650FC03926F1</div>
+            </div>
+            <div>
+              <div class="addrLabel">USDT Deposit Address(TRC-20)</div>
+              <div class="addrValue">TXxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</div>
+            </div>
+            <div>
+              <div class="addrLabel">USDT Deposit Address(Solana)</div>
+              <div class="addrValue">So1xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</div>
+            </div>
+            <div>
+              <div class="addrLabel">TUFTDeposit Address(BEP-20)</div>
+              <div class="addrValue">0x0000000000000000000000000000000000000000</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="tools3">
+            <div class="iconBtn"><div class="miniCircle">💳</div><div class="bigLabel" style="font-size:16px">Deposit</div></div>
+            <div class="iconBtn"><div class="miniCircle">🧾</div><div class="bigLabel" style="font-size:16px">Withdraw</div></div>
+            <div class="iconBtn"><div class="miniCircle">⚙</div><div class="bigLabel" style="font-size:16px">Settings</div></div>
+          </div>
+        </div>
+
+        <button class="gradientBtn">Deposit in fiat currency</button>
+
+        <div class="card">
+          <div class="sectionHead">
+            <h3 class="title">History</h3>
+            <div class="muted">All ›</div>
+          </div>
+          <div class="historyItem">
+            <div>
+              <div style="font-weight:700">USDT Deposit</div>
+              <div class="muted">Pending</div>
+            </div>
+            <div style="font-weight:700">$0</div>
+          </div>
+          <div class="historyItem">
+            <div>
+              <div style="font-weight:700">Withdraw</div>
+              <div class="muted">No records</div>
+            </div>
+            <div style="font-weight:700">$0</div>
+          </div>
+        </div>
+
+        <div class="helpBubble">Help</div>
+      </section>
+
+      <section id="earnScreen" class="screen">
+        <div class="card">
+          <h3 class="title">Earn</h3>
+          <div class="line"></div>
+          <div class="historyItem"><div>Today Profit</div><div>$0</div></div>
+          <div class="historyItem"><div>Total Profit</div><div>$0</div></div>
+        </div>
+      </section>
+
+      <section id="reserveScreen" class="screen">
+        <div class="card">
+          <h3 class="title">Reserve</h3>
+          <div class="line"></div>
+          <div class="muted">Reserve page ready.</div>
+        </div>
+      </section>
+
+      <section id="assetsScreen" class="screen">
+        <div class="card">
+          <h3 class="title">Assets</h3>
+          <div class="line"></div>
+          <div class="historyItem"><div>USDT Balance</div><div>0</div></div>
+          <div class="historyItem"><div>Points</div><div>10</div></div>
+        </div>
+      </section>
+
+      <section id="stakeScreen" class="screen">
+        <div class="card">
+          <h3 class="title">Stake</h3>
+          <div class="line"></div>
+          <div class="muted">Stake page ready.</div>
+        </div>
+      </section>
+    </div>
+
+    <div class="bottomShell">
+      <div class="bottomNav">
+        <div class="navItem" data-open="stakeScreen">Stake</div>
+        <div class="navItem" data-open="earnScreen">Earn</div>
+        <div class="navItem" data-open="reserveScreen">Reserve</div>
+        <div class="navItem" data-open="assetsScreen">Assets</div>
+        <div class="navItem active" data-open="myScreen">My</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const screens = document.querySelectorAll('.screen');
+    const navItems = document.querySelectorAll('.navItem, [data-open]');
+
+    function openScreen(id){
+      screens.forEach(s => s.classList.remove('active'));
+      const el = document.getElementById(id);
+      if(el) el.classList.add('active');
+      document.querySelectorAll('.navItem').forEach(n => n.classList.toggle('active', n.dataset.open === id));
+      window.scrollTo({top:0, behavior:'smooth'});
+    }
+
+    document.querySelectorAll('[data-open]').forEach(el => {
+      el.addEventListener('click', () => openScreen(el.dataset.open));
+    });
+  </script>
+</body>
+</html>
